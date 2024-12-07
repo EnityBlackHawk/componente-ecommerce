@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db-ecommerce:
+    image: postgres:latest
+    networks:
+      - network-ecommerce
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: ecommerce
+      POSTGRES_USER: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  cmp-ecommerce:
+    build: .
+    image: entityblackhawk/cmp-ecommerce:latest
+    environment:
+        DATABASE_HOST_PORT: db-ecommerce:5432 # Prod only
+    networks:
+        - network-ecommerce
+    depends_on:
+        - db-ecommerce
+
+networks:
+    network-ecommerce:
+        driver: bridge
