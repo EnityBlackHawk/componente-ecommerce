@@ -10,8 +10,6 @@ services:
       POSTGRES_USER: postgres
     volumes:
       - ./data:/var/lib/postgresql/data
-    ports:
-      - "5434:5432"
 
   cmp-ecommerce:
     build: .
