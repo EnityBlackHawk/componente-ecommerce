@@ -8,11 +8,11 @@ import java.util.List;
 
 public abstract class GenericService<TEntity, TPk, TRepo extends JpaRepository<TEntity, TPk>, TDto, TCreateDTO> {
 
-    private final TRepo repository;
-    private final ModelMapper modelMapper;
-    private final Class<TEntity> entityClass;
-    private final Class<TDto> dtoClass;
-    private final Class<TCreateDTO> createDtoClass;
+    protected final TRepo repository;
+    protected final ModelMapper modelMapper;
+    protected final Class<TEntity> entityClass;
+    protected final Class<TDto> dtoClass;
+    protected final Class<TCreateDTO> createDtoClass;
 
     protected GenericService(TRepo repository, Class<TEntity> entityClass, Class<TDto> dtoClass, Class<TCreateDTO> createDtoClass) {
         this.repository = repository;
