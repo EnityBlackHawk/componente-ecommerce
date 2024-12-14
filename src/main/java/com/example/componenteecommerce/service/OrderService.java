@@ -15,10 +15,12 @@ import java.util.UUID;
 public class OrderService extends GenericService<Order, UUID, OrderRepository, OrderDTO, OrderDTO> {
 
     private final ProductClient productClient;
+    private final PaymentQueueService paymentQueueService;
 
-    protected OrderService(OrderRepository repository, ProductClient productClient) {
+    protected OrderService(OrderRepository repository, ProductClient productClient, PaymentQueueService paymentQueueService) {
         super(repository, Order.class, OrderDTO.class, OrderDTO.class);
         this.productClient = productClient;
+        this.paymentQueueService = paymentQueueService;
     }
 
     @Override
@@ -47,9 +49,11 @@ public class OrderService extends GenericService<Order, UUID, OrderRepository, O
         }
 
         productClient.updateMany(products);
+        paymentQueueService.sendPaymentToQueue(entity.getPayment());
 
         Order result = repository.save(modelMapper.map(entity, entityClass));
         var dto = modelMapper.map(result, dtoClass);
+        // TODO fill all the fields
         return dto;
     }
 

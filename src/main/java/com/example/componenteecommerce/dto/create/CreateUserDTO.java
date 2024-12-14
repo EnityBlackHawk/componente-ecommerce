@@ -1,5 +1,6 @@
 package com.example.componenteecommerce.dto.create;
 
+import com.example.componenteecommerce.enums.OrderStatus;
 import com.example.componenteecommerce.enums.UserType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;

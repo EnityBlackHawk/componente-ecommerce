@@ -2,6 +2,7 @@ package com.example.componenteecommerce.dto;
 
 import com.example.componenteecommerce.entity.Item;
 import com.example.componenteecommerce.entity.User;
+import com.example.componenteecommerce.enums.OrderStatus;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -23,5 +24,8 @@ public class OrderDTO {
     private User user;
     @NotNull
     private List<ItemDTO> items;
+    private OrderStatus orderStatus = OrderStatus.PENDING;
+    @NotNull(message = "Payment is required")
+    private PaymentDTO payment;
 
 }

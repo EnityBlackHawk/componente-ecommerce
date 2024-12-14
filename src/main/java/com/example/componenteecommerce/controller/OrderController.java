@@ -2,6 +2,9 @@ package com.example.componenteecommerce.controller;
 
 import com.example.componenteecommerce.dto.OrderDTO;
 import com.example.componenteecommerce.service.OrderService;
+import jakarta.validation.Valid;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
@@ -22,8 +26,9 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public OrderDTO create(@RequestBody OrderDTO order) {
+    public OrderDTO create(@RequestBody @Valid OrderDTO order) {
         return orderService.create(order);
     }
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.componenteecommerce.entity;
 
+import com.example.componenteecommerce.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,6 @@ public class Order {
     private User user;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Item> items;
+    private OrderStatus status;
 
 }
