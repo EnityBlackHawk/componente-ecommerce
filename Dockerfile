@@ -1,7 +1,14 @@
 FROM gradle:8.11.1-jdk17 AS builder
 WORKDIR /app
-COPY . .
-RUN ./gradlew build
+
+COPY build.gradle.kts settings.gradle.kts ./
+COPY gradle ./gradle
+
+RUN gradle build || return 0
+
+COPY src ./src
+RUN gradle build
+
 RUN unzip build/distributions/componente-ecommerce-0.0.1-SNAPSHOT.zip -d /app/out
 
 
