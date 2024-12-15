@@ -1,10 +1,8 @@
 package com.example.componenteecommerce.service;
 
-import com.example.componenteecommerce.dto.ItemDTO;
-import com.example.componenteecommerce.dto.ManyProductDTO;
-import com.example.componenteecommerce.dto.OrderDTO;
-import com.example.componenteecommerce.dto.ProductDTO;
+import com.example.componenteecommerce.dto.*;
 import com.example.componenteecommerce.entity.Order;
+import com.example.componenteecommerce.enums.OrderStatus;
 import com.example.componenteecommerce.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +19,7 @@ public class OrderService extends GenericService<Order, UUID, OrderRepository, O
         super(repository, Order.class, OrderDTO.class, OrderDTO.class);
         this.productClient = productClient;
         this.paymentQueueService = paymentQueueService;
+        paymentQueueService.setPaymentDTOConsumer(this::updateOrder);
     }
 
     @Override
@@ -49,9 +48,13 @@ public class OrderService extends GenericService<Order, UUID, OrderRepository, O
         }
 
         productClient.updateMany(products);
-        paymentQueueService.sendPaymentToQueue(entity.getPayment());
 
         Order result = repository.save(modelMapper.map(entity, entityClass));
+
+        var pay = entity.getPayment();
+        pay.setOrderId(result.getId());
+        paymentQueueService.sendPaymentToQueue(entity.getPayment());
+
         var dto = modelMapper.map(result, dtoClass);
         // TODO fill all the fields
         return dto;
@@ -67,7 +70,18 @@ public class OrderService extends GenericService<Order, UUID, OrderRepository, O
                 var product = products.stream().filter(productDTO -> productDTO.getCode().equals(item.getProduct().getCode())).findFirst();
                 product.ifPresent(item::setProduct);
             }
+            //TODO JOIN the payment
         }
         return orders;
+    }
+
+    public void updateOrder(PaymentResponseDTO dto) {
+        var order = repository.findById(dto.getOrderId()).orElseThrow(() -> {
+            throw new RuntimeException("Order not found: " + dto.getOrderId());
+        });
+
+        order.setPaymentId(dto.getId());
+        order.setStatus(OrderStatus.APPROVED);
+        repository.save(order);
     }
 }

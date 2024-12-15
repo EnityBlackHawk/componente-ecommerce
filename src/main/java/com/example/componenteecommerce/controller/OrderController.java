@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${endpoint.prefix}/orders")
@@ -30,5 +31,9 @@ public class OrderController {
         return orderService.create(order);
     }
 
+    @GetMapping("/get/{id}")
+    public OrderDTO get(@PathVariable UUID id) {
+        return orderService.findById(id);
+    }
 
 }

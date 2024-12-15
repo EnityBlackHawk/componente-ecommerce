@@ -25,5 +25,6 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Item> items;
     private OrderStatus status;
+    private String paymentId;
 
 }
