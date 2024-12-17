@@ -1,10 +1,9 @@
 package com.example.componenteecommerce.controller;
 
 import com.example.componenteecommerce.dto.OrderDTO;
+import com.example.componenteecommerce.dto.create.CreateOrderDTO;
 import com.example.componenteecommerce.service.OrderService;
 import jakarta.validation.Valid;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public OrderDTO create(@RequestBody @Valid OrderDTO order) {
+    public OrderDTO create(@RequestBody @Valid CreateOrderDTO order) {
         return orderService.create(order);
     }
 

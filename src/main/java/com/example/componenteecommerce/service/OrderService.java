@@ -1,6 +1,7 @@
 package com.example.componenteecommerce.service;
 
 import com.example.componenteecommerce.dto.*;
+import com.example.componenteecommerce.dto.create.CreateOrderDTO;
 import com.example.componenteecommerce.entity.Order;
 import com.example.componenteecommerce.enums.OrderStatus;
 import com.example.componenteecommerce.repository.OrderRepository;
@@ -10,20 +11,20 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class OrderService extends GenericService<Order, UUID, OrderRepository, OrderDTO, OrderDTO> {
+public class OrderService extends GenericService<Order, UUID, OrderRepository, OrderDTO, CreateOrderDTO> {
 
     private final ProductClient productClient;
     private final PaymentQueueService paymentQueueService;
 
     protected OrderService(OrderRepository repository, ProductClient productClient, PaymentQueueService paymentQueueService) {
-        super(repository, Order.class, OrderDTO.class, OrderDTO.class);
+        super(repository, Order.class, OrderDTO.class, CreateOrderDTO.class);
         this.productClient = productClient;
         this.paymentQueueService = paymentQueueService;
         paymentQueueService.setPaymentDTOConsumer(this::updateOrder);
     }
 
     @Override
-    public OrderDTO create(OrderDTO entity) {
+    public OrderDTO create(CreateOrderDTO entity) {
 
         List<ProductDTO> orderProds = entity.getItems().stream()
                 .map(ItemDTO::getProduct)
@@ -45,14 +46,22 @@ public class OrderService extends GenericService<Order, UUID, OrderRepository, O
             }
 
             product.setQuantity(product.getQuantity() - op.getQuantity());
+            op.setValue(product.getValue());
         }
 
         productClient.updateMany(products);
 
         Order result = repository.save(modelMapper.map(entity, entityClass));
 
+        double value = 0.0;
+        for(var items : entity.getItems()) {
+            value += items.getProduct().getValue() * items.getQuantity();
+        }
+
         var pay = entity.getPayment();
         pay.setOrderId(result.getId());
+        pay.setValue(value);
+
         paymentQueueService.sendPaymentToQueue(entity.getPayment());
 
         var dto = modelMapper.map(result, dtoClass);

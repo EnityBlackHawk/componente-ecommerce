@@ -18,5 +18,6 @@ public class PaymentDTO {
     private String cardNumber;
     private Integer cvv;
     private String expirationDate;
+    private Double value;
 
 }

@@ -1,5 +1,7 @@
-package com.example.componenteecommerce.dto;
+package com.example.componenteecommerce.dto.create;
 
+import com.example.componenteecommerce.dto.ItemDTO;
+import com.example.componenteecommerce.dto.PaymentDTO;
 import com.example.componenteecommerce.entity.User;
 import com.example.componenteecommerce.enums.OrderStatus;
 import jakarta.validation.constraints.NotNull;
@@ -13,13 +15,15 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDTO {
+public class CreateOrderDTO {
+
     private UUID id;
     @NotNull
     private User user;
     @NotNull
     private List<ItemDTO> items;
     private OrderStatus orderStatus = OrderStatus.PENDING;
-    private String payment;
+    @NotNull(message = "Payment is required")
+    private PaymentDTO payment;
 
 }
