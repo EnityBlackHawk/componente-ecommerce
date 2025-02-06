@@ -3,6 +3,7 @@ package com.example.componenteecommerce.controller;
 import com.example.componenteecommerce.dto.UserDTO;
 import com.example.componenteecommerce.dto.create.CreateUserDTO;
 import com.example.componenteecommerce.service.UserService;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public UserDTO create(@RequestBody CreateUserDTO user) {
+    public UserDTO create(@Valid @RequestBody CreateUserDTO user) {
         return userService.create(user);
     }
 
