@@ -79,9 +79,20 @@ public class OrderService extends GenericService<Order, UUID, OrderRepository, O
                 var product = products.stream().filter(productDTO -> productDTO.getCode().equals(item.getProduct().getCode())).findFirst();
                 product.ifPresent(item::setProduct);
             }
-            //TODO JOIN the payment
         }
         return orders;
+    }
+
+    @Override
+    public OrderDTO findById(UUID id) {
+        var order = super.findById(id);
+        List<Long> ids = order.getItems().stream().map(itemDTO -> itemDTO.getProduct().getCode()).toList();
+        var products = productClient.findMany( new ManyProductDTO(ids));
+        for(var item : order.getItems()) {
+            var product = products.stream().filter(productDTO -> productDTO.getCode().equals(item.getProduct().getCode())).findFirst();
+            product.ifPresent(item::setProduct);
+        }
+        return order;
     }
 
     public void updateOrder(PaymentResponseDTO dto) {

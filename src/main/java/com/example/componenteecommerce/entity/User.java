@@ -30,4 +30,11 @@ public class User {
     private String password;
     @NotNull
     private UserType userType;
+
+
+    public User(UUID id) {
+        this.id = id;
+    }
+
+
 }

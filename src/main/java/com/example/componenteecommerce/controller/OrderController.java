@@ -2,6 +2,7 @@ package com.example.componenteecommerce.controller;
 
 import com.example.componenteecommerce.dto.OrderDTO;
 import com.example.componenteecommerce.dto.create.CreateOrderDTO;
+import com.example.componenteecommerce.entity.User;
 import com.example.componenteecommerce.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,8 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public OrderDTO create(@RequestBody @Valid CreateOrderDTO order) {
+    public OrderDTO create(@Valid @RequestBody CreateOrderDTO order, @RequestAttribute("uuid") UUID user) {
+        order.setUser(new User(user));
         return orderService.create(order);
     }
 

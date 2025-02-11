@@ -4,6 +4,7 @@ import com.example.componenteecommerce.dto.ItemDTO;
 import com.example.componenteecommerce.dto.PaymentDTO;
 import com.example.componenteecommerce.entity.User;
 import com.example.componenteecommerce.enums.OrderStatus;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,11 +19,11 @@ import java.util.UUID;
 public class CreateOrderDTO {
 
     private UUID id;
-    @NotNull
     private User user;
     @NotNull
     private List<ItemDTO> items;
     private OrderStatus orderStatus = OrderStatus.PENDING;
+
     @NotNull(message = "Payment is required")
     private PaymentDTO payment;
 
